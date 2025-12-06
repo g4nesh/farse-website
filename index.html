@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxen AI | Frontier Compute</title>
+    <link rel="icon" type="image/png" href="logoluxen_copy-removebg-preview copy.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Manrope:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-glow: rgba(255, 255, 255, 0.15);
+            --luxen-blue: #60a5fa;
+            --status-green: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            /* Custom cursor retained */
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            /* No scrolling */
+            position: relative;
+        }
+
+        /* --- Background Video Layer --- */
+        #bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.55;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.1) 100%);
+            z-index: -1;
+            backdrop-filter: blur(2px);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-img:hover {
+            opacity: 1;
+        }
+
+        .top-link {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 24px;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .top-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Main Content (Left Aligned) --- */
+        main {
+            position: absolute;
+            top: 50%;
+            left: 8vw;
+            transform: translateY(-45%);
+            text-align: left;
+            z-index: 5;
+            width: auto;
+            max-width: 900px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(3.5rem, 6vw, 7rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #FFFFFF 20%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: cinematicSlideUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+        }
+
+        p.subtitle {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0;
+            font-weight: 300;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cinematicSlideUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+        }
+
+        .tagline-container {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cinematicSlideUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.8s;
+        }
+
+        .tagline {
+            display: inline-block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--luxen-blue);
+            padding: 12px 24px;
+            border-radius: 6px;
+            background: rgba(96, 165, 250, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .tagline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .tagline:hover {
+            border-color: var(--luxen-blue);
+            background: rgba(96, 165, 250, 0.15);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+        }
+
+        /* --- Footer Elements --- */
+        .bottom-right {
+            position: fixed;
+            bottom: 40px;
+            right: 5vw;
+            z-index: 10;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.2s;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .contact-btn::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .contact-btn:hover::after {
+            width: 60px;
+            background: var(--luxen-blue);
+        }
+
+        /* --- System Status (Bottom Left) --- */
+        .system-status {
+            position: fixed;
+            bottom: 40px;
+            left: 5vw;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.4s;
+            pointer-events: none;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--status-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--status-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* --- Custom Cursor --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        body.hovering .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* --- Animations --- */
+        @keyframes cinematicSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            50% {
+                left: 100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.5rem;
+            }
+
+            main {
+                left: 5vw;
+                width: 90%;
+                transform: translateY(-50%);
+            }
+
+            nav {
+                padding: 30px 5vw;
+            }
+
+            .bottom-right {
+                bottom: 30px;
+                right: 20px;
+            }
+
+            .system-status {
+                bottom: 30px;
+                left: 20px;
+            }
+
+            .cursor-dot,
+            .cursor-outline {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+
+    <div class="overlay"></div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav>
+        <img src="logoluxen_copy-removebg-preview copy.png" alt="Luxen" class="logo-img hover-trigger">
+        <a href="opensource.html" class="top-link hover-trigger">Open Source</a>
+    </nav>
+
+    <main>
+        <h1>Frontier Computer Use.</h1>
+        <p class="subtitle">
+            We are building the next generation of action-based vision models.
+            Solving the latency of agency.
+        </p>
+        <div class="tagline-container">
+            <div class="tagline hover-trigger">Launching 2026</div>
+        </div>
+    </main>
+
+    <div class="system-status">
+        <div class="status-dot"></div>
+        System Status: Active
+    </div>
+
+    <div class="bottom-right">
+        <a href="https://cal.com/ganstal/luxen?overlayCalendar=true" target="_blank" class="contact-btn hover-trigger">
+            Contact Us
+        </a>
+    </div>
+
+    <script>
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const triggers = document.querySelectorAll('.hover-trigger');
+
+        let mouseX = 0, mouseY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            cursorDot.style.left = `${mouseX}px`; cursorDot.style.top = `${mouseY}px`;
+        });
+
+        function animateCursor() {
+            let speed = 0.2;
+            outlineX += (mouseX - outlineX) * speed;
+            outlineY += (mouseY - outlineY) * speed;
+            cursorOutline.style.left = `${outlineX}px`; cursorOutline.style.top = `${outlineY}px`;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        triggers.forEach(t => {
+            t.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            t.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+    </script>
+
+</body>
+
+</html>
